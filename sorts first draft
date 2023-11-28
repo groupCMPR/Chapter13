@@ -1,0 +1,97 @@
+//A > Create a dynamic array and fill with random elements
+//B > Display the unsorted array
+//C > Perform BubbleSort
+//D > Perform SelectionSort
+//E > Perform InsertionSort
+//F > Perform QuickSort
+//G > Perform MergeSort
+//H > Perform HeapSort
+
+#include <iostream>
+#include <vector>
+#include <algorithm>
+#include "input.h"
+using namespace std;
+
+vector<double> sort_array = { 7.9, 2, 5, 1, 6 };
+
+//work in progress
+void sort_heap_recurse(size_t end) {
+
+	if (end >= sort_array.size())
+		return;
+
+	swap(sort_array[0], sort_array[end]);
+
+	if (sort_array[1] > sort_array[2]) {
+		swap(sort_array[0], sort_array[1]);
+	}
+	else {
+		swap(sort_array[0], sort_array[2]);
+	}
+
+	sort_heap_recurse(end - 1);
+}
+
+int main() {
+
+	make_heap(sort_array.begin(), sort_array.end());
+
+	sort_heap_recurse(sort_array.size() - 1);
+
+	for (auto iter = sort_array.begin(); iter != sort_array.end(); ++iter) {
+		cout << *iter << " ";
+	}
+}
+
+//work in progress
+void merge_sort(size_t start, size_t end) {
+
+	if (end > start) {
+
+	}
+
+}
+
+//turn into recursive:
+//insertion sort - ascending
+//for (int i = 1; i < sort_array.size(); ++i) {
+//	int next_element = sort_array[i];
+//	for (int j = i - 1; j >= 0; --j) {
+//		if (next_element > sort_array[j]) {
+//			sort_array[j + 1] = next_element;
+//			break;
+//		}
+//		else {
+//			swap(sort_array[j + 1], sort_array[j]);
+//		}
+//	}
+//}
+
+
+//bubble sort - ascending
+//for (int j = 0; j < sort_array.size(); ++j) {
+//	for (int i = 1; i < sort_array.size(); ++i) {
+//		if (sort_array[i] < sort_array[i - 1]) {
+//			swap(sort_array[i], sort_array[i - 1]);
+//		}
+//	}
+//}
+
+//selection sort - ascending
+// for (int i = 0; i < sort_array.size(); ++i) {
+//	double found_number = sort_array[i];
+//	int position = i;
+//	for (int j = i + 1; j < sort_array.size(); ++j) {
+//		if (found_number > sort_array[j]) {
+//			found_number = sort_array[j];
+//			position = j;
+//		}
+//	}
+//
+//	swap(sort_array[i], sort_array[position]);
+//}
+
+//heapsort/mergesort/quicksort work in progress
+//	make_heap(sort_array.begin(), sort_array.end());
+//  sort_heap(sort_array.begin(), sort_array.end());
