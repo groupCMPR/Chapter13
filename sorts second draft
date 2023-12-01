@@ -4,6 +4,7 @@
 
 #include <iostream> //For cout
 #include <iomanip>  //For formatting output
+#include <random>   //For randomizing values
 
 //HEADER FILES
 #include "input.h" //For input validation
@@ -83,15 +84,15 @@ void option1()
         case '0': return;
         case 'A': 
         {
-            double value = 0.0;
+            random_device develop;
+            default_random_engine generator(develop());
+            uniform_real_distribution<double> range(0.1, 100.9);
             int size = 0;
-            size = inputInteger("\n\t\tEnter the size of the dynamic array: ", true);
 
+            size = inputInteger("\n\t\tEnter the size of the dynamic array: ", true);
             for (int i = 0; i < size; i++)
             {
-                value = rand() % 100 + 1;
-                value /= rand() % 10 + 1;
-                sorting.push(value);
+                sorting.push(range(generator));
             }
 
             cout << "\n\t\tDynamic array's size of " << sorting.getSize() << " has been created with random elements.\n";
@@ -112,6 +113,17 @@ void option1()
             cout << "\n\t\tBubble Sort: ";
             choiceArrangement = inputChar("\n\t\tChoose sort in (A)scending or (D)escending order: ", static_cast<string>("AD"));
 
+            if (choiceArrangement == 'A')
+            {
+                cout << "\n\t\tAscending:\n\t\t";
+                copySorting.bubbleSort(0, 0, lesserCompare);
+            }
+            else
+            {
+                cout << "\n\t\tDescending:\n\t\t";
+                copySorting.bubbleSort(0, 0, greaterCompare);
+            }
+
             copySorting.display();
         }break;
         case 'D':
@@ -124,6 +136,17 @@ void option1()
             copySorting = sorting;
             cout << "\n\t\tSelection Sort: ";
             choiceArrangement = inputChar("\n\t\tChoose sort in (A)scending or (D)escending order: ", static_cast<string>("AD"));
+
+            if (choiceArrangement == 'A')
+            {
+                cout << "\n\t\tAscending:\n\t\t";
+                copySorting.selectionSort(0, 0, greaterCompare);
+            }
+            else
+            {
+                cout << "\n\t\tDescending:\n\t\t";
+                copySorting.selectionSort(0, 0, lesserCompare);
+            }
 
             copySorting.display();
         }break;
@@ -187,6 +210,17 @@ void option1()
             cout << "\n\t\tMerge Sort: ";
             choiceArrangement = inputChar("\n\t\tChoose sort in (A)scending or (D)escending order: ", static_cast<string>("AD"));
 
+            if (choiceArrangement == 'A')
+            {
+                cout << "\n\t\tAscending:\n\t\t";
+                copySorting.mergeSort(0, copySorting.getSize() - 1, lesserCompare);
+            }
+            else
+            {
+                cout << "\n\t\tDescending:\n\t\t";
+                copySorting.mergeSort(0, copySorting.getSize() - 1, greaterCompare);
+            }
+
             copySorting.display();
 
         }break;
@@ -200,6 +234,17 @@ void option1()
             copySorting = sorting;
             cout << "\n\t\tHeap Sort: ";
             choiceArrangement = inputChar("\n\t\tChoose sort in (A)scending or (D)escending order: ", static_cast<string>("AD"));
+
+            if (choiceArrangement == 'A')
+            {
+                cout << "\n\t\tAscending:\n\t\t";
+                copySorting.heapSort(copySorting.getSize() - 1, 0, lesserCompare);
+            }
+            else
+            {
+                cout << "\n\t\tDescending:\n\t\t";
+                copySorting.heapSort(copySorting.getSize() - 1, 0, greaterCompare);
+            }
 
             copySorting.display();
 
