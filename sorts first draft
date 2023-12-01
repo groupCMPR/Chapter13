@@ -14,30 +14,121 @@
 using namespace std;
 
 vector<double> sort_array = { 78.4, 59.3, 19.4, 44.1, 53.1, 52.9, 74.5, 81.8, 84.0, 21.4, 59.4, 34.3, 47.5, 79.2, 7.5, 63.5, 17.0, 20.2, 87.9, 18.6 };
+vector <double> merged_array;
+
+//for ascending
+bool lesser_compare(double comp_1, double comp_2) {
+	return (comp_1 < comp_2);
+}
+
+//for descending
+bool greater_compare(double comp_1, double comp_2) {
+	return (comp_1 > comp_2);
+}
+
+//precondition: low > -1, high < size
+//postcondition: switches elements for quicksort(basically sorts ), does the descending sort
+size_t partition_descend(size_t low, size_t high) {
+	    double pivot = sort_array[low];
+
+		//switches numbers from high to low positions until it goes past subarray allotted
+		while (low < high) {
+			while (low < high && sort_array[high] <= pivot)
+				--high;
+			
+			//"swaps" elements
+			sort_array[low] = sort_array[high];
+
+			while (low < high && pivot <= sort_array[low])
+				++low;
+
+			//"swaps" elements
+			sort_array[high] = sort_array[low];
+		}
+
+		//settles the pivot to compare at low when called again
+		sort_array[low] = pivot;
+	   
+		return low;
+}
+
+//precondition: low > -1, high < size
+//postcondition: switches elements for quicksort(basically sorts ), does the ascending sort
+size_t partition_ascend(size_t low, size_t high) {
+	double pivot = sort_array[low];
+
+	//switches numbers from high to low
+	while (low < high) {
+		while (low < high && sort_array[high] >= pivot)
+			--high;
+
+		//"swaps" elements
+		sort_array[low] = sort_array[high];
+
+		while (low < high && pivot >= sort_array[low])
+			++low;
+
+		//"swaps" elements
+		sort_array[high] = sort_array[low];
+	}
+
+	//settles the pivot to compare at low when called again
+	sort_array[low] = pivot;
+
+	return low;
+}
+
+//precondition: low starts at 0, high at size -1, true if descend, false if ascend
+//postcondition: sorts everything
+void quicksort(int low, int high, bool is_descending) {
+    if (low < high) {
+
+		//partitions (switches elements)
+		size_t partition_index;
+		if (is_descending)
+			partition_index = partition_descend(low, high);
+		else
+			partition_index = partition_ascend(low, high);
+
+		//makes into subarrays	
+		quicksort(low, partition_index - 1, is_descending);
+		quicksort(partition_index + 1, high, is_descending);
+    }
+}
 
 
 
 
 int main() {
 
-	make_heap(sort_array.begin(), sort_array.end());
-    sort_heap_recurse(sort_array.size() - 1);
-		for (auto iter = sort_array.begin(); iter != sort_array.end(); ++iter) {
-			cout << *iter << " ";
-		}
+    quicksort(0, sort_array.size()-1, false);
+
+	for (auto iter = sort_array.begin(); iter != sort_array.end(); ++iter) {
+		cout << *iter << " ";
+	}
 
 }
-	//void merge_sort(size_t start, size_t end);
 
-//ascending insertion, 1, 0
-//int insertion_sort_recurse(size_t start, int count) {
+
+
+
+
+
+
+// precondition: start is 1, count is 0, function for comparison (must be double)
+// ascending: 1, 0, greater_compare
+// descending: 1, 0, lesser_compare
+// postcondition: sorts and returns count
+//int insertion_sort_recurse(size_t start, int count, bool (compare_func)(double, double)) {
 //
 //	if (start >= sort_array.size())
 //		return count;
-//
-//	int next_element = sort_array[start];
+//  
+// //will move element to previous location if it is greater or lesser than previous item
+// //if not will move previous element up one
+//	double next_element = sort_array[start];
 //	for (int j = start - 1; j >= 0; --j) {
-//		if (next_element > sort_array[j]) {
+//		if (compare_func(next_element, sort_array[j])) {
 //			sort_array[j + 1] = next_element;
 //			break;
 //		}
@@ -48,31 +139,36 @@ int main() {
 //	}
 //
 //
-//	return insertion_sort_recurse(start + 1, count + 1);
+//	return insertion_sort_recurse(start + 1, count + 1, compare_func);
 //
 //}
 
-
-//0,0
-//int bubble_sort_recurse(size_t start, int count)
+//precondition: start is 0, count is 0,  function for comparison
+// ascending: (0, 0, lesser_compare)
+// descending: (0, 0, greater_compare)
+//postcondition: sorts, returns count
+//int bubble_sort_recurse(size_t start, int count, bool (compare_func)(double, double))
 //{
 //	if (start >= sort_array.size())
 //		return count;
 //
-//	//bubble sort - ascending
+//	// sorts all pairs once
+//	//them recurses to do the sort again (like a double for loop)
 //	for (int i = 1; i < sort_array.size(); ++i) {
-//		if (sort_array[i] < sort_array[i - 1]) {
+//		if (compare_func(sort_array[i], sort_array[i - 1])) {
 //			swap(sort_array[i], sort_array[i - 1]);
 //			++count;
 //		}
 //	}
 //
-//	return bubble_sort_recurse(start + 1, count);
+//	return bubble_sort_recurse(start + 1, count, compare_func);
 //}
 
-//0, 0
-//selection sort - ascending
-//int selection_sort_recurse(size_t start, int count) {
+// precondition: at start 0, count 0, function for comparison
+// ascending: (0, 0, greater_compare)
+// descending: (0, 0, lesser_compare)
+// postcondition: sorts and returns count
+//int selection_sort_recurse(size_t start, int count, bool (compare_func)(double, double)) {
 //
 //	if (start >= sort_array.size())
 //		return count;
@@ -80,8 +176,9 @@ int main() {
 //	double found_number = sort_array[start];
 //	int position = start;
 //
+// //finds position of greatest or least value and swaps to next position
 //	for (int i = start + 1; i < sort_array.size(); ++i) {
-//		if (found_number > sort_array[i]) {
+//		if (compare_func(found_number, sort_array[i])) {
 //			found_number = sort_array[i];
 //			position = i;
 //
@@ -90,19 +187,78 @@ int main() {
 //
 //	swap(sort_array[start], sort_array[position]);
 //
-//	return selection_sort_recurse(start + 1, count + 1);
+//	return selection_sort_recurse(start + 1, count + 1, compare_func);
 //}
 
-// use make_heap before using this  
-// size - 1, 0
-// ascending - if max heap and descending if min heap 
-//int sort_heap_recurse(size_t end, int count) {
-//    if (end == 1) {
+//// precondition: must be heap before (make_heap), end is size -1, count is 0, comparison
+//// ascending: make_heap(sort_array.begin(), sort_array.end(), lesser_compare) 
+//// sort_heap_recurse(sort_array.size()-1, 0, lesser_compare)
+//// descending:  make_heap(sort_array.begin(), sort_array.end(), greater_compare) 
+//// sort_heap_recurse(sort_array.size()-1, 0, greater_compare)
+//// pstcondition:sorts and returns size
+//int sort_heap_recurse(size_t end, int count, bool (compare_func)(double, double)) {
+//    if (end <= 0) {
 //        return count;
 //    }
 //
+//    //swaps ends
 //    swap(sort_array[0], sort_array[end]);
 //    ++count;
-//    make_heap(sort_array.begin(), sort_array.begin() + end);
-//    sort_heap_recurse(end - 1);
+//
+//    //reheaps
+//    make_heap(sort_array.begin(), sort_array.begin() + end, compare_func);
+//    return sort_heap_recurse(end - 1, count, compare_func);
+//}
+
+
+////precondition: start is 0, mid is half, end is size - 1, comparision 
+//// remember to resize space: merged_array.resize(sort_array.size());
+////ascending: mergesort(0, sort_array.size() - 1, lesser_compare);
+////descending:mergesort(0, sort_array.size() - 1, greater_compare);
+////postcondition: merges and sorts everything, (counts every instance it was in a while loop)
+//void merge(size_t start, size_t mid, size_t end, bool (compare_func)(double, double)) {
+//    size_t first_arr_count = start, second_arr_count = mid + 1, temp_count = start;
+//
+//    //if subarrays are not at end
+//    //gets max or min value
+//    while (first_arr_count <= mid && second_arr_count <= end) {
+//        if (compare_func(sort_array[first_arr_count], sort_array[second_arr_count])) {
+//            merged_array[temp_count++] = sort_array[first_arr_count++];
+//        }
+//        else {
+//            merged_array[temp_count++] = sort_array[second_arr_count++];
+//        }
+//    }
+//
+//    //if there is any left from first, place inside new array
+//    while (first_arr_count <= mid) {
+//        merged_array[temp_count++] = sort_array[first_arr_count++];
+//    }
+//
+//    //if there is any left from second subarray, place inside new array
+//    while (second_arr_count <= end) {
+//        merged_array[temp_count++] = sort_array[second_arr_count++];
+//
+//    }
+//
+//    //put inside first array
+//    for (start; start <= end; ++start) {
+//        sort_array[start] = merged_array[start];
+//    }
+//}
+//
+//
+//// precondition: start is 0, mid is half, end is size - 1, comparision
+//// remember to resize space: merged_array.resize(sort_array.size());
+////ascending: mergesort(0, sort_array.size() - 1, lesser_compare);
+////descending:mergesort(0, sort_array.size() - 1, greater_compare);
+////postcondition: splits into pairs of array
+//void mergesort(size_t start, size_t end, bool (compare_func)(double, double)) {
+//    //takes a portion, as array in pairs
+//    if (start < end) {
+//        size_t mid = (end + start) / 2;
+//        mergesort(start, mid, compare_func);
+//        mergesort(mid + 1, end, compare_func);
+//        merge(start, mid, end, compare_func);
+//    }
 //}
