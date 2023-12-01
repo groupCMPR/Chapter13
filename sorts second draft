@@ -14,8 +14,6 @@ using namespace std;
 int menuOption();
 //Option 1 - Sorting simulations
 void option1();
-int partition(int arr[], int start, int end);
-void quickSort(int arr[], int start, int end);
 //Option 2 - Application of student records
 void option2();
 
