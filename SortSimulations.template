@@ -1,0 +1,166 @@
+//Name: Neidy Malaga and Vivian Huynh
+//Date: 11/29/2023
+//Description: template file for template class SortSimulations
+
+//----------------------------------------------------------------------
+// 
+//						CONSTRUCTORS
+// 
+//----------------------------------------------------------------------
+template <class T>
+SortSimulations<T>::SortSimulations()
+{}
+
+template <class T>
+SortSimulations<T>::SortSimulations(SortSimulations<T>& obj)
+{
+	myVector = obj.myVector;
+}
+
+//----------------------------------------------------------------------
+// 
+//							ACCESSORS
+// 
+//----------------------------------------------------------------------
+
+template <class T>
+bool lesserCompare(T comp_1, T comp_2) 
+{
+	return (comp_1 < comp_2);
+}
+
+template <class T>
+bool greaterCompare(T comp_1, T comp_2) 
+{
+	return (comp_1 > comp_2);
+}
+
+template <class T>
+T SortSimulations<T>::partition_descend(size_t low, size_t high) 
+{
+	T pivot = myVector[low];
+
+	//switches numbers from high to low positions until it goes past subarray allotted
+	while (low < high) {
+		while (low < high && myVector[high] <= pivot)
+			--high;
+
+		//"swaps" elements
+		myVector[low] = myVector[high];
+
+		while (low < high && pivot <= myVector[low])
+			++low;
+
+		//"swaps" elements
+		myVector[high] = myVector[low];
+	}
+
+	//settles the pivot to compare at low when called again
+	myVector[low] = pivot;
+
+	return low;
+}
+
+template <class T>
+T SortSimulations<T>::partition_ascend(size_t low, size_t high)
+{
+	T pivot = myVector[low];
+
+	//switches numbers from high to low
+	while (low < high) {
+		while (low < high && myVector[high] >= pivot)
+			--high;
+
+		//"swaps" elements
+		myVector[low] = myVector[high];
+
+		while (low < high && pivot >= myVector[low])
+			++low;
+
+		//"swaps" elements
+		myVector[high] = myVector[low];
+	}
+
+	//settles the pivot to compare at low when called again
+	myVector[low] = pivot;
+
+	return low;
+}
+
+template <class T>
+int SortSimulations<T>::getSize()
+{
+	return myVector.size();
+}
+
+template <class T>
+bool SortSimulations<T>::isEmpty()
+{
+	return myVector.empty();
+}
+
+template <class T>
+int SortSimulations<T>::insertionSort(int start, int count, bool (compare_func)(T, T))
+{
+	if (start >= myVector.size())
+		return count;
+
+	//will move element to previous location if it is greater or lesser than previous item
+	//if not will move previous element up one
+	T next_element = myVector[start];
+	for (int j = start - 1; j >= 0; --j) {
+		if (compare_func(next_element, myVector[j])) {
+			myVector[j + 1] = next_element;
+			break;
+		}
+		else {
+			swap(myVector[j + 1], myVector[j]);
+		}
+		++count;
+	}
+
+	return insertionSort(start + 1, count + 1, compare_func);
+}
+
+//----------------------------------------------------------------------
+// 
+//							MUTATORS
+// 
+//----------------------------------------------------------------------
+template <class T>
+void SortSimulations<T>::push(const T& element)
+{
+	myVector.push_back(element);
+}
+
+template <class T>
+void SortSimulations<T>::quickSort(int low, int high, bool ascendDescend) 
+{
+	if (low < high)
+	{
+		//partitions (switches elements)
+		size_t partition_index;
+		if (ascendDescend == false)
+			partition_index = partition_descend(low, high);
+		else
+			partition_index = partition_ascend(low, high);
+
+		//makes into subarrays	
+		quickSort(low, partition_index - 1, ascendDescend);
+		quickSort(partition_index + 1, high, ascendDescend);
+	}
+}
+
+template <class T>
+void SortSimulations<T>::display()
+{
+	for (int i = 0; i < myVector.size(); i++)
+	{
+		cout << fixed << setprecision(1) << myVector[i];
+		if (myVector.size() != 1 && i < myVector.size() - 1)
+		{
+			cout << ", ";
+		}
+	}
+	cout << '\n';
+}
