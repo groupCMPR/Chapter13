@@ -6,40 +6,44 @@
 #include <iostream>
 #include <iomanip>
 #include <vector>
+#include <random>
 #include <algorithm>
 using namespace std;
 
 template <class T>
 class SortSimulations
 {
-private: 
+private:
+	vector<T> original_Vector;
 	vector<T> myVector;
-	T partition_descend(int, int);
-	T partition_ascend(int, int);
-	void mergeSortHalf(int, int, int, bool (compare_func)(T, T));
+	vector<T> merged_array;
+	size_t count;
 
 public:
-	bool lesserCompare(T, T);
 	SortSimulations();
-	SortSimulations(SortSimulations<T>&);
 
-	int getSize();
-	bool isEmpty();
-	int bubbleSort(int, int, bool (compare_func)(T, T));
-	int selectionSort(int, int, bool (compare_func)(T, T));
-	int insertionSort(int, int, bool (compare_func)(T, T));
-	int heapSort(int, int, bool (compare_func)(T, T));
-
-	void push(const T&);
-	void quickSort(int, int, bool);
-	void mergeSort(int, int, bool (compare_func)(T, T));
+	//mutators
+	void set_sort_array();
+	void set_Array(int size);
+	void bubble_sort_recurse(size_t, static bool (*compare_func)(T, T));
+	void selection_sort_recurse(size_t, bool (*compare_func)(T, T));
+	void insertion_sort_recurse(size_t, bool (*compare_func)(T, T));
+	void sort_heap_recurse(size_t, bool (*compare_func)(T, T));
+	void merge(size_t, size_t, size_t end, bool (*compare_func)(T, T));
+	void mergesort(size_t, size_t, bool (*compare_func)(T, T));
+	T partition(size_t low, size_t high, bool(compare_func(T, T)));
+	void quick_sort(size_t low, size_t high, bool (*compare_func)(T, T));
 	void display();
+	void reset_Count();
+
+	//accessors
+	static bool greater_compare(T comp_1, T comp_2);
+	static bool lesser_compare(T comp_1, T comp_2);
+	size_t get_Size() const;
+	bool is_Empty() const;
+
+	template <typename T>
+	friend ostream& operator<< (ostream& out, const SortSimulations<T>& obj);
 };
 
 #include "SortSimulations.template"
-
-template <class T>
-bool greaterCompare(T comp_1, T comp_2);
-
-template <class T>
-bool lesserCompare(T comp_1, T comp_2);
