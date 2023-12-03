@@ -9,113 +9,56 @@
 //----------------------------------------------------------------------
 template <class T>
 SortSimulations<T>::SortSimulations()
-{}
-
-template <class T>
-SortSimulations<T>::SortSimulations(SortSimulations<T>& obj)
 {
-	myVector = obj.myVector;
+	count = 0;
 }
+
+//precondition: positive size, Template must be double
+//postcondition: fill in original array
+template <class T>
+void SortSimulations<T>::set_Array(int size)
+{
+	//seed
+	random_device develop;
+	mt19937 rng(develop());
+	uniform_real_distribution<double> range(0.0, 100.0);
+
+	original_Vector.clear();
+	original_Vector.reserve(size);
+	myVector.reserve(size);
+
+	for (int i = 0; i < size; ++i) {
+		original_Vector.push_back(range(rng));
+	}
+
+}
+
+//precondition: positive size, Template must be double
+//postcondition: fill in original array
+template <class T>
+void SortSimulations<T>::set_sort_array()
+{
+	myVector.clear();
+	myVector = original_Vector;
+}
+
 
 //----------------------------------------------------------------------
 // 
-//							ACCESSORS
+//							MUTATORS
 // 
 //----------------------------------------------------------------------
-//Precondition : Passing in two valid template values
-//Postcondition: Return the less than value, ascending order
-template <class T>
-bool lesserCompare(T comp_1, T comp_2) 
-{
-	return (comp_1 < comp_2);
-}
-//Precondition : Passing in two valid template values
-//Postcondition: Return the greater than value, descending order
-template <class T>
-bool greaterCompare(T comp_1, T comp_2) 
-{
-	return (comp_1 > comp_2);
-}
-//---------------------------------------------------------------------------------------------------- TODO
-//Precondition : Passing in low > -1 and high < size
-//Postcondition: Switches elements for quicksorting in descending order
-template <class T>
-T SortSimulations<T>::partition_descend(int low, int high) 
-{
-	T pivot = myVector[low];
 
-	//switches numbers from high to low positions until it goes past subarray allotted
-	while (low < high) {
-		while (low < high && myVector[high] <= pivot)
-			--high;
 
-		//"swaps" elements
-		myVector[low] = myVector[high];
-
-		while (low < high && pivot <= myVector[low])
-			++low;
-
-		//"swaps" elements
-		myVector[high] = myVector[low];
-	}
-
-	//settles the pivot to compare at low when called again
-	myVector[low] = pivot;
-
-	return low;
-}
-//---------------------------------------------------------------------------------------------------- TODO
-//Precondition : Passing in low > -1 and high < size
-//Postcondition: Switches elements for quicksorting in ascending order
-template <class T>
-T SortSimulations<T>::partition_ascend(int low, int high)
-{
-	T pivot = myVector[low];
-
-	//switches numbers from high to low
-	while (low < high) {
-		while (low < high && myVector[high] >= pivot)
-			--high;
-
-		//"swaps" elements
-		myVector[low] = myVector[high];
-
-		while (low < high && pivot >= myVector[low])
-			++low;
-
-		//"swaps" elements
-		myVector[high] = myVector[low];
-	}
-
-	//settles the pivot to compare at low when called again
-	myVector[low] = pivot;
-
-	return low;
-}
-//Precondition : N/A
-//Postcondition: Returning the size of the dynamic array
-template <class T>
-int SortSimulations<T>::getSize()
-{
-	return myVector.size();
-}
-//Precondition : N/A
-//Postcondition: Return TRUE if dynamic array is empty
-//				 Return FALSE if dynamic array is NOT empty
-template <class T>
-bool SortSimulations<T>::isEmpty()
-{
-	return myVector.empty();
-}
 //Precondition : start is 0, count is 0, function for comparison(valid template data type)
 //				 ascending: (0, 0, lesser_compare)
 //				 descending: (0, 0, greater_compare)
-//Postcondition: Does bubble sort, returns count
+//Postcondition: Does bubble sort
 template <class T>
-int SortSimulations<T>::bubbleSort(int start, int count, bool (compare_func)(T, T))
+void SortSimulations<T>::bubble_sort_recurse(size_t start, bool (*compare_func)(T, T))
 {
 	if (start >= myVector.size())
-		return count;
+		return;
 
 	// sorts all pairs once
 	//them recurses to do the sort again (like a double for loop)
@@ -126,17 +69,17 @@ int SortSimulations<T>::bubbleSort(int start, int count, bool (compare_func)(T, 
 		}
 	}
 
-	return bubbleSort(start + 1, count, compare_func);
+	bubble_sort_recurse(start + 1, compare_func);
 }
+
 //Precondition : at start 0, count 0, function for comparison(valid template data type)
 //				 ascending: (0, 0, greater_compare)
 //				 descending: (0, 0, lesser_compare)
 //Postcondition: Does selection sort, returns count
 template <class T>
-int SortSimulations<T>::selectionSort(int start, int count, bool (compare_func)(T, T)) 
-{
+void SortSimulations<T>::selection_sort_recurse(size_t start, bool (*compare_func)(T, T)) {
 	if (start >= myVector.size())
-		return count;
+		return;
 
 	T found_number = myVector[start];
 	int position = start;
@@ -146,23 +89,24 @@ int SortSimulations<T>::selectionSort(int start, int count, bool (compare_func)(
 		if (compare_func(found_number, myVector[i])) {
 			found_number = myVector[i];
 			position = i;
+			++count;
 
 		}
 	}
 
 	swap(myVector[start], myVector[position]);
 
-	return selectionSort(start + 1, count + 1, compare_func);
+	selection_sort_recurse(start + 1, compare_func);
 }
 //Precondition : start is 1, count is 0, function for comparison(valid template data type)
 //				 ascending: 1, 0, greater_compare
 //				 descending: 1, 0, lesser_compare
 //Postcondition: Does insert sort, returns count
 template <class T>
-int SortSimulations<T>::insertionSort(int start, int count, bool (compare_func)(T, T))
+void SortSimulations<T>::insertion_sort_recurse(size_t start, bool (*compare_func)(T, T))
 {
 	if (start >= myVector.size())
-		return count;
+		return;
 
 	//will move element to previous location if it is greater or lesser than previous item
 	//if not will move previous element up one
@@ -178,7 +122,7 @@ int SortSimulations<T>::insertionSort(int start, int count, bool (compare_func)(
 		++count;
 	}
 
-	return insertionSort(start + 1, count + 1, compare_func);
+	insertion_sort_recurse(start + 1, compare_func);
 }
 //Precondition : must be heap before (make_heap), end is size -1, count is 0, function for comparison(valid template data type)
 //				 ascending: make_heap(sort_array.begin(), sort_array.end(), lesser_compare) 
@@ -187,10 +131,10 @@ int SortSimulations<T>::insertionSort(int start, int count, bool (compare_func)(
 //							 heapSort(sort_array.size()-1, 0, greater_compare)
 //Postcondition: Does heap sort, returns count
 template <class T>
-int SortSimulations<T>::heapSort(int end, int count, bool (compare_func)(T, T)) 
+void SortSimulations<T>::sort_heap_recurse(size_t end, bool (*compare_func)(T, T))
 {
     if (end <= 0) {
-        return count;
+        return;
     }
 
     //swaps ends
@@ -199,38 +143,51 @@ int SortSimulations<T>::heapSort(int end, int count, bool (compare_func)(T, T))
 
     //reheaps
     make_heap(myVector.begin(), myVector.begin() + end, compare_func);
-    return heapSort(end - 1, count, compare_func);
+	sort_heap_recurse(end - 1, compare_func);
 }
 
-//----------------------------------------------------------------------
-// 
-//							MUTATORS
-// 
-//----------------------------------------------------------------------
-//Precondition : Passing in a valid template value
-//Postcondition: Push in the value to the back of the dynamic array
 template <class T>
-void SortSimulations<T>::push(const T& element)
+T SortSimulations<T>::partition(size_t low, size_t high, bool(compare_func(T, T)))
 {
-	myVector.push_back(element);
+	T pivot = myVector[low];
+
+	//switches numbers from high to low
+	while (low < high) {
+		while (low < high && compare_func(myVector[high], pivot))
+			--high;
+
+		//"swaps" elements
+		myVector[low] = myVector[high];
+
+		while (low < high && compare_func(pivot, myVector[low]))
+			++low;
+
+		//"swaps" elements
+		myVector[high] = myVector[low];
+
+		count += 2;
+	}
+
+	//settles the pivot to compare at low when called again
+	myVector[low] = pivot;
+
+	return low;
 }
+
+
 //Precondition : low starts at 0, high at size - 1, true if descend, false if ascend
 //Postcondition: Does quick sort
 template <class T>
-void SortSimulations<T>::quickSort(int low, int high, bool ascendDescend) 
+void SortSimulations<T>::quick_sort(size_t low, size_t high, bool (*compare_func)(T, T))
 {
 	if (low < high)
 	{
 		//partitions (switches elements)
-		size_t partition_index;
-		if (ascendDescend == false)
-			partition_index = partition_descend(low, high);
-		else
-			partition_index = partition_ascend(low, high);
+		size_t partition_index = partition(low, high, compare_func);
 
 		//makes into subarrays	
-		quickSort(low, partition_index - 1, ascendDescend);
-		quickSort(partition_index + 1, high, ascendDescend);
+		quick_sort(low, partition_index - 1, compare_func);
+		quick_sort(partition_index + 1, high, compare_func);
 	}
 }
 //Precondition : start is 0, mid is half of size, end is size - 1, function for comparison(valid template data type) 
@@ -238,9 +195,8 @@ void SortSimulations<T>::quickSort(int low, int high, bool ascendDescend)
 //				 descending: mergeSort(0, myVector.size() - 1, greater_compare);
 //Postcondition: merges and sorts everything, (counts every instance it was in a while loop)
 template <class T>
-void SortSimulations<T>::mergeSortHalf(int start, int mid, int end, bool (compare_func)(T, T))
+void SortSimulations<T>::merge(size_t start, size_t mid, size_t end, bool (*compare_func)(T, T))
 {
-	vector<T> merged_array;
 	merged_array.resize(myVector.size());
 
 	size_t first_arr_count = start, second_arr_count = mid + 1, temp_count = start;
@@ -254,16 +210,19 @@ void SortSimulations<T>::mergeSortHalf(int start, int mid, int end, bool (compar
         else {
             merged_array[temp_count++] = myVector[second_arr_count++];
         }
+		++count;
     }
 
     //if there is any left from first, place inside new array
     while (first_arr_count <= mid) {
         merged_array[temp_count++] = myVector[first_arr_count++];
+		++count;
     }
 
     //if there is any left from second subarray, place inside new array
     while (second_arr_count <= end) {
         merged_array[temp_count++] = myVector[second_arr_count++];
+		++count;
 
     }
 
@@ -277,28 +236,91 @@ void SortSimulations<T>::mergeSortHalf(int start, int mid, int end, bool (compar
 //				 descending: mergeSort(0, myVector.size() - 1, greater_compare);
 //Postcondition: splits into pairs of array
 template <class T>
-void SortSimulations<T>::mergeSort(int start, int end, bool (compare_func)(T, T))
+void SortSimulations<T>::mergesort(size_t start, size_t end, bool (*compare_func)(T, T))
 {
 	//takes a portion, as array in pairs
     if (start < end) {
         size_t mid = (end + start) / 2;
-        mergeSort(start, mid, compare_func);
-        mergeSort(mid + 1, end, compare_func);
-        mergeSortHalf(start, mid, end, compare_func);
+		mergesort(start, mid, compare_func);
+		mergesort(mid + 1, end, compare_func);
+        merge(start, mid, end, compare_func);
     }
 }
+
+
+//precondition: None
+//postcondition: resets count to zero
+template <class T>
+void  SortSimulations<T>::reset_Count() {
+	count = 0;
+}
+//----------------------------------------------------------------------
+// 
+//							ACCESSORS
+// 
+//----------------------------------------------------------------------
+//Precondition : Passing in two valid template values
+//Postcondition: Return the less than value, ascending order
+template <class T>
+bool SortSimulations<T>::lesser_compare(T comp_1, T comp_2)
+{
+	return (comp_1 < comp_2);
+}
+//Precondition : Passing in two valid template values
+//Postcondition: Return the greater than value, descending order
+template <class T>
+bool  SortSimulations<T>::greater_compare(T comp_1, T comp_2)
+{
+	return (comp_1 > comp_2);
+}
+
+//Precondition : N/A
+//Postcondition: Returning the size of the dynamic array
+template <class T>
+size_t SortSimulations<T>::get_Size() const
+{
+	return myVector.size();
+}
+//Precondition : N/A
+//Postcondition: Return TRUE if dynamic array is empty
+//				 Return FALSE if dynamic array is NOT empty
+template <class T>
+bool SortSimulations<T>::is_Empty() const
+{
+	return myVector.empty();
+}
+
 //Precondition : Dynamic array is not empty
 //Postcondition: Display all the values in the dynamic array
 template <class T>
 void SortSimulations<T>::display()
 {
-	for (int i = 0; i < myVector.size(); i++)
+	cout << "\n\tUnsorted dynamic array\n\t";
+	for (int i = 0; i < original_Vector.size(); i++)
 	{
-		cout << fixed << setprecision(1) << myVector[i];
-		if (myVector.size() != 1 && i < myVector.size() - 1)
+		cout << fixed << setprecision(1) << original_Vector[i];
+		if (i < original_Vector.size() - 1)
 		{
 			cout << ", ";
 		}
 	}
 	cout << '\n';
+}
+
+//precondition: N/A
+//postcondition: None; The elements are only read; not altered.
+template <typename T>
+ostream& operator<< (ostream& out, const SortSimulations<T>& obj) {
+	out << "\n\tnumber of swapping routines = " << obj.count;
+
+	out << "\n\tThe sorted elements: ";
+	for (int i = 0; i < obj.myVector.size(); i++)
+	{
+		cout << fixed << setprecision(1) << obj.myVector[i];
+		if (i < obj.myVector.size() - 1)
+		{
+			cout << ", ";
+		}
+	}
+	return out;
 }
