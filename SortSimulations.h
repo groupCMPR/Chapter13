@@ -26,7 +26,7 @@ public:
 	//MUTATORS
 	void set_Array(int);
 	void set_sort_array();
-	void bubble_sort_recurse(size_t, static bool (*compare_func)(T, T));
+	void bubble_sort_recurse(size_t, bool (*compare_func)(T, T));
 	void selection_sort_recurse(size_t, bool (*compare_func)(T, T));
 	void insertion_sort_recurse(size_t, bool (*compare_func)(T, T));
 	void sort_heap_recurse(size_t, bool (*compare_func)(T, T));
