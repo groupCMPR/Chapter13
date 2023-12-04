@@ -1,10 +1,15 @@
-#include <iostream>
-#include <vector>
-#include <string>
-#include <fstream>
-#include <sstream>
-#include <iomanip>
-#include <algorithm>
+//Name: Alexis Martinez and John Kim
+//Date: 12/3/2023
+//Description: Header file for class StudentRecord
+
+#pragma
+#include <iostream>  //For cout
+#include <vector>    //For vector
+#include <string>    //For string
+#include <fstream>   //For reading and writing in file
+#include <sstream>   //For stringstream
+#include <iomanip>   //For formatting output
+#include <algorithm> //For sorting
 
 using namespace std;
 
