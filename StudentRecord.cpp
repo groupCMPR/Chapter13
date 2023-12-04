@@ -1,3 +1,7 @@
+//Name: Alexis Martinez and John Kim
+//Date: 12/3/2023
+//Description: cpp file for class StudentRecord
+
 #include "StudentRecord.h"
 
 void StudentRecord::readData(const string& filename) {
