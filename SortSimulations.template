@@ -233,7 +233,7 @@ void  SortSimulations<T>::reset_Count() {
 template <class T>
 void SortSimulations<T>::displayUnsorted()
 {
-	cout << "\n\tUnsorted dynamic array\n\t";
+	cout << "\n\t\tUnsorted dynamic array\n\t\t";
 	for (int i = 0; i < original_Vector.size(); i++)
 	{
 		cout << fixed << setprecision(1) << original_Vector[i];
