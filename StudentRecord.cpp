@@ -3,7 +3,8 @@
 //Description: cpp file for class StudentRecord
 
 #include "StudentRecord.h"
-
+//PreCondition:Accepts a string data type
+//PostCondition: Parses the file information to create a student object
 void StudentRecord::readData(const string& filename) {
     ifstream file(filename);
     string line, token;
@@ -25,7 +26,8 @@ void StudentRecord::readData(const string& filename) {
     }
     cout << "\n\tData have been read from " << filename << ".";
 }
-
+//PreCondition: None
+//PostCondition: Displays all the students in the container 
 void StudentRecord::displayRecords() {
     for (const auto& student : studentInfo) {
         cout << setw(10) << right << student.id;
@@ -34,11 +36,13 @@ void StudentRecord::displayRecords() {
         cout << setw(10) << right << student.gpa << endl;
     }
 }
-
+//PreCondition: Accepts a student object
+//PostCondition: inserts that student at the end of the list 
 void StudentRecord::insertRecord(const Student& newStudent) {
     studentInfo.push_back(newStudent);
 }
-
+//PreCondition: Accepts a string data type
+//PostCondition: removes the student based off the name entered 
 void StudentRecord::remove(const string& nameToRemove) {
     for (auto it = studentInfo.begin(); it != studentInfo.end(); ) {
         if (it->name == nameToRemove) {
@@ -52,7 +56,8 @@ void StudentRecord::remove(const string& nameToRemove) {
     }
     cout << "\n\tThe student record cannot be found to be removed.";
 }
-
+//PreCondition: Accepts two char data types 
+//PostCondition: Sorts either by asending or descending order and either ID, Name,GPA or major 
 void StudentRecord::sortRecords(char sortOrder, char sortBy) {
     if (sortBy == 'I') {
         sort(studentInfo.begin(), studentInfo.end(), [sortOrder](const Student& student1, const Student& student2) {
@@ -75,7 +80,8 @@ void StudentRecord::sortRecords(char sortOrder, char sortBy) {
             });
     }
 }
-
+//PreCondition: Accepts a string value for the file name
+//PostCondition: Writes the list of students to a file
 void StudentRecord::writeData(const string& filename) {
     ofstream file(filename);
     if (!file) {
