@@ -12,7 +12,7 @@
 #include <algorithm> //For sorting
 
 using namespace std;
-
+//Struct to use for parsed data from file
 struct Student {
     int id;
     string name;
@@ -25,6 +25,7 @@ private:
     vector<Student> studentInfo;
 
 public:
+//members
     void readData(const string& filename);
     void displayRecords();
     void insertRecord(const Student& newStudent);
