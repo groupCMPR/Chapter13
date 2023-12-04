@@ -259,7 +259,6 @@ template <class T>
 bool SortSimulations<T>::is_Empty() const
 {
 	return original_Vector.empty();
-	return myVector.empty();
 }
 
 //Precondition : N/A
