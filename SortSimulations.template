@@ -56,7 +56,7 @@ void SortSimulations<T>::set_sort_array()
 template <class T>
 void SortSimulations<T>::bubble_sort_recurse(size_t start, bool (*compare_func)(T, T))
 {
-	if (start >= myVector.size())
+	if (start >= myVector.size() || stack_call > 3000)
 		return;
 
 	// sorts all pairs once
@@ -68,6 +68,7 @@ void SortSimulations<T>::bubble_sort_recurse(size_t start, bool (*compare_func)(
 		}
 	}
 
+	++stack_call;
 	bubble_sort_recurse(start + 1, compare_func);
 }
 
@@ -77,7 +78,7 @@ void SortSimulations<T>::bubble_sort_recurse(size_t start, bool (*compare_func)(
 //Postcondition: Does selection sort, returns count
 template <class T>
 void SortSimulations<T>::selection_sort_recurse(size_t start, bool (*compare_func)(T, T)) {
-	if (start >= myVector.size())
+	if (start >= myVector.size() || stack_call > 2000)
 		return;
 
 	T found_number = myVector[start];
@@ -94,7 +95,7 @@ void SortSimulations<T>::selection_sort_recurse(size_t start, bool (*compare_fun
 	}
 
 	swap(myVector[start], myVector[position]);
-
+	++stack_call;
 	selection_sort_recurse(start + 1, compare_func);
 }
 
@@ -105,7 +106,7 @@ void SortSimulations<T>::selection_sort_recurse(size_t start, bool (*compare_fun
 template <class T>
 void SortSimulations<T>::insertion_sort_recurse(size_t start, bool (*compare_func)(T, T))
 {
-	if (start >= myVector.size())
+	if (start >= myVector.size() || stack_call > 3000)
 		return;
 
 	//will move element to previous location if it is greater or lesser than previous item
@@ -122,6 +123,7 @@ void SortSimulations<T>::insertion_sort_recurse(size_t start, bool (*compare_fun
 		++count;
 	}
 
+	++stack_call;
 	insertion_sort_recurse(start + 1, compare_func);
 }
 
@@ -134,7 +136,7 @@ void SortSimulations<T>::insertion_sort_recurse(size_t start, bool (*compare_fun
 template <class T>
 void SortSimulations<T>::sort_heap_recurse(size_t end, bool (*compare_func)(T, T))
 {
-    if (end <= 0) {
+    if (end <= 0 || stack_call > 2000) {
         return;
     }
 
@@ -144,6 +146,7 @@ void SortSimulations<T>::sort_heap_recurse(size_t end, bool (*compare_func)(T, T
 
     //reheaps
     make_heap(myVector.begin(), myVector.begin() + end, compare_func);
+	++stack_call;
 	sort_heap_recurse(end - 1, compare_func);
 }
 
@@ -197,35 +200,82 @@ template <class T>
 void SortSimulations<T>::mergesort(size_t start, size_t end, bool (*compare_func)(T, T))
 {
 	//takes a portion, as array in pairs
+	if(stack_call > 2000)
+		return;
+
     if (start < end) {
-        size_t mid = (end + start) / 2;
+        size_t mid = (end + start) / 2;		
+		++stack_call;
 		mergesort(start, mid, compare_func);
+		++stack_call;
 		mergesort(mid + 1, end, compare_func);
+		++stack_call;
         merge(start, mid, end, compare_func);
     }
+
+	--stack_call;
+}
+
+//Precondition : low > -1, high < size, function for comparison(valid template data type) 
+//Postcondition: Returns the index of pivot
+template <class T>
+int SortSimulations<T>::partition(int low, int high, bool(compare_func(T, T)))
+{
+	T pivot = myVector[low];
+
+	//switches numbers from high to low
+	while (low < high) {
+		while (low < high && compare_func(myVector[high], pivot))
+			--high;
+
+
+		//"swaps" elements
+		myVector[low] = myVector[high];
+
+		while (low < high && compare_func(pivot, myVector[low]))
+			++low;
+
+		//"swaps" elements
+		myVector[high] = myVector[low];
+
+		count += 2;
+	}
+
+	//settles the pivot to compare at low when called again
+	myVector[low] = pivot;
+
+	return low;
 }
 
 //Precondition : low starts at 0, high at size - 1, true if descend, false if ascend
 //Postcondition: Does quick sort
 template <class T>
-void SortSimulations<T>::quick_sort(size_t low, size_t high, bool (*compare_func)(T, T))
+void SortSimulations<T>::quick_sort(int low, int high, bool (*compare_func)(T, T))
 {
+	if(stack_call > 2000)
+		return;
+
 	if (low < high)
 	{
 		//partitions (switches elements)
-		size_t partition_index = partition(low, high, compare_func);
+		int partition_index = partition(low, high, compare_func);
 
 		//makes into subarrays	
+		++stack_call;
 		quick_sort(low, partition_index - 1, compare_func);
+		++stack_call;
 		quick_sort(partition_index + 1, high, compare_func);
 	}
+
+	--stack_call;
 }
 
 //Precondition : N/A
-//Postcondition: Resets count to zero
+//Postcondition: Resets count and stack call to zero
 template <class T>
 void  SortSimulations<T>::reset_Count() {
 	count = 0;
+	stack_call = 0;
 }
 
 //Precondition : Dynamic array is not empty
@@ -280,41 +330,26 @@ bool  SortSimulations<T>::greater_compare(T comp_1, T comp_2)
 //Precondition : Passing in two valid template values
 //Postcondition: Return the less than value, ascending order
 template <class T>
-bool SortSimulations<T>::lesser_compare(T comp_1, T comp_2)
+bool SortSimulations<T>::lesser_equal_compare(T comp_1, T comp_2)
 {
 	return (comp_1 < comp_2);
 }
 
-//Precondition : low > -1, high < size, function for comparison(valid template data type) 
-//Postcondition: Returns the index of pivot
+//Precondition : Passing in two valid template values
+//Postcondition: Return the greater than value, descending order
 template <class T>
-T SortSimulations<T>::partition(size_t low, size_t high, bool(compare_func(T, T)))
+bool  SortSimulations<T>::greater_equal_compare(T comp_1, T comp_2)
 {
-	T pivot = myVector[low];
-
-	//switches numbers from high to low
-	while (low < high) {
-		while (low < high && compare_func(myVector[high], pivot))
-			--high;
-
-		//"swaps" elements
-		myVector[low] = myVector[high];
-
-		while (low < high && compare_func(pivot, myVector[low]))
-			++low;
-
-		//"swaps" elements
-		myVector[high] = myVector[low];
-
-		count += 2;
-	}
-
-	//settles the pivot to compare at low when called again
-	myVector[low] = pivot;
-
-	return low;
+	return (comp_1 >= comp_2);
 }
 
+//Precondition : Passing in two valid template values
+//Postcondition: Return the less than value, ascending order
+template <class T>
+bool SortSimulations<T>::lesser_compare(T comp_1, T comp_2)
+{
+	return (comp_1 <= comp_2);
+}
 //Precondition : N/A
 //Postcondition: Output the swapping routines of the swap and the sorted data
 template <typename T>
