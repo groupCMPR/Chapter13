@@ -18,6 +18,7 @@ private:
 	vector<T> myVector;
 	vector<T> merged_array;
 	size_t count;
+	size_t stack_call;
 
 public:
 	//CONSTRUCTOR
@@ -32,7 +33,8 @@ public:
 	void sort_heap_recurse(size_t, bool (*compare_func)(T, T));
 	void merge(size_t, size_t, size_t, bool (*compare_func)(T, T));
 	void mergesort(size_t, size_t, bool (*compare_func)(T, T));
-	void quick_sort(size_t, size_t, bool (*compare_func)(T, T));
+	int partition(int, int, bool(compare_func(T, T)));
+	void quick_sort(int, int, bool (*compare_func)(T, T));
 	void reset_Count();
 	void displayUnsorted();
 
@@ -41,7 +43,9 @@ public:
 	size_t get_Size() const;
 	static bool greater_compare(T, T);
 	static bool lesser_compare(T, T);
-	T partition(size_t, size_t, bool(compare_func(T, T)));
+	static bool lesser_equal_compare(T, T);
+	static bool greater_equal_compare(T, T);
+
 
 	template <typename T>
 	friend ostream& operator<< (ostream&, const SortSimulations<T>&);
