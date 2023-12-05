@@ -7,9 +7,9 @@
 #include <iomanip>  //For formatting output
 
 //HEADER FILES
-#include "input.h"           //For input validation
-#include "SortSimulations.h" //For option 1
-#include "StudentRecord.h"   //For option 2
+#include "input.h" //For input validation
+#include "SortSimulations.h"
+#include "StudentRecord.h"
 using namespace std;
 
 //PROTOTYPES
@@ -84,27 +84,21 @@ void option1()
         {
             int size = inputInteger("\n\t\tEnter the size of the dynamic array: ", true);
             sort_array.set_Array(size);
-            cout << "\n\t\tDynamic array's size of " << sort_array.get_Size() << " has been created with random elements.\n";
+            cout << "\n\t\tDynamic array's size of " << size << " has been created with random elements.\n";
         }break;
         case 'B':
         {
-            if (sort_array.is_Empty()) {
-                cout << "\n\t\tArray is empty.\n";
-                break;
-            }
-
             sort_array.displayUnsorted();
         }break;
-        case 'C': 
-        {
+        case 'C': {
             sort_array.set_sort_array();
 
             if (sort_array.is_Empty()) {
-                cout << "\n\t\tArray is empty.\n";
-                break;
+                cout << "\n\tArray is empty.";
+                return;
             }
 
-            char select = inputChar("\n\t\tBubbleSort: \n\t\tChoose sort in (A)scending or (D)escending order: ", static_cast<string>("AD"));
+            char select = inputChar("\n\tBubbleSort: \n\tChoose sort in (A)scending or (D)escending order: ", static_cast<string>("AD"));
 
             if (select == 'A')
                 sort_array.bubble_sort_recurse(0, &SortSimulations<double>::lesser_compare);
@@ -114,16 +108,15 @@ void option1()
             cout << sort_array;
             sort_array.reset_Count();
         }break;
-        case 'D': 
-        {
+        case 'D': {
             sort_array.set_sort_array();
 
             if (sort_array.is_Empty()) {
-                cout << "\n\t\tArray is empty.\n";
-                break;
+                cout << "\n\tArray is empty.";
+                return;
             }
 
-            char select = inputChar("\n\t\tSelectionSort: \n\t\tChoose sort in (A)scending or (D)escending order: ", static_cast<string>("AD"));
+            char select = inputChar("\n\tSelectionSort: \n\tChoose sort in (A)scending or (D)escending order: ", static_cast<string>("AD"));
 
             if (select == 'A')
                 sort_array.selection_sort_recurse(0, &SortSimulations<double>::greater_compare);
@@ -133,16 +126,15 @@ void option1()
             cout << sort_array;
             sort_array.reset_Count();
         } break;
-        case 'E': 
-        {
+        case 'E': {
             sort_array.set_sort_array();
 
             if (sort_array.is_Empty()) {
-                cout << "\n\t\tArray is empty.\n";
-                break;
+                cout << "\n\tArray is empty.";
+                return;
             }
 
-            char select = inputChar("\n\t\tInsertionSort: \n\t\tChoose sort in (A)scending or (D)escending order: ", static_cast<string>("AD"));
+            char select = inputChar("\n\tInsertionSort: \n\tChoose sort in (A)scending or (D)escending order: ", static_cast<string>("AD"));
 
             if (select == 'A')
                 sort_array.insertion_sort_recurse(1, &SortSimulations<double>::greater_compare);
@@ -152,35 +144,33 @@ void option1()
             cout << sort_array;
             sort_array.reset_Count();
         }break;
-        case 'F': 
-        {
+        case 'F': {
             sort_array.set_sort_array();
 
             if (sort_array.is_Empty()) {
-                cout << "\n\t\tArray is empty.\n";
-                break;
+                cout << "\n\tArray is empty.";
+                return;
             }
 
-            char select = inputChar("\n\t\tQuickSort: \n\t\tChoose sort in (A)scending or (D)escending order: ", static_cast<string>("AD"));
+            char select = inputChar("\n\tQuickSort: \n\tChoose sort in (A)scending or (D)escending order: ", static_cast<string>("AD"));
 
             if (select == 'A')
-                sort_array.quick_sort(0, sort_array.get_Size() - 1, &SortSimulations<double>::greater_compare);
+                sort_array.quick_sort(0, sort_array.get_Size() - 1, &SortSimulations<double>::greater_equal_compare);
             else
-                sort_array.quick_sort(0, sort_array.get_Size() - 1, &SortSimulations<double>::lesser_compare);
+                sort_array.quick_sort(0, sort_array.get_Size() - 1, &SortSimulations<double>::lesser_equal_compare);
 
             cout << sort_array;
             sort_array.reset_Count();
         }break;
-        case 'G': 
-        {
+        case 'G': {
             sort_array.set_sort_array();
 
             if (sort_array.is_Empty()) {
-                cout << "\n\t\tArray is empty.\n";
-                break;
+                cout << "\n\tArray is empty.";
+                return;
             }
 
-            char select = inputChar("\n\t\tMergeSort: \n\t\tChoose sort in (A)scending or (D)escending order: ", static_cast<string>("AD"));
+            char select = inputChar("\n\tMergeSort: \n\tChoose sort in (A)scending or (D)escending order: ", static_cast<string>("AD"));
 
             if (select == 'A')
                 sort_array.mergesort(0, sort_array.get_Size() - 1, &SortSimulations<double>::lesser_compare);
@@ -190,16 +180,15 @@ void option1()
             cout << sort_array;
             sort_array.reset_Count();
         } break;
-        case 'H': 
-        {
+        case 'H': {
             sort_array.set_sort_array();
 
             if (sort_array.is_Empty()) {
-                cout << "\n\t\tArray is empty.\n";
-                break;
+                cout << "\n\tArray is empty.";
+                return;
             }
 
-            char select = inputChar("\n\t\tHeapSort: \n\tChoose sort in (A)scending or (D)escending order: ", static_cast<string>("AD"));
+            char select = inputChar("\n\tHeapSort: \n\tChoose sort in (A)scending or (D)escending order: ", static_cast<string>("AD"));
 
             if (select == 'A')
                 sort_array.sort_heap_recurse(sort_array.get_Size() - 1, &SortSimulations<double>::lesser_compare);
