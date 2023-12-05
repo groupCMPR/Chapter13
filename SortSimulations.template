@@ -330,26 +330,27 @@ bool  SortSimulations<T>::greater_compare(T comp_1, T comp_2)
 //Precondition : Passing in two valid template values
 //Postcondition: Return the less than value, ascending order
 template <class T>
+bool SortSimulations<T>::lesser_compare(T comp_1, T comp_2)
+{
+	return (comp_1 <= comp_2);
+}
+
+//Precondition : Passing in two valid template values
+//Postcondition: Return the less than or equal to value, ascending order
+template <class T>
 bool SortSimulations<T>::lesser_equal_compare(T comp_1, T comp_2)
 {
 	return (comp_1 < comp_2);
 }
 
 //Precondition : Passing in two valid template values
-//Postcondition: Return the greater than value, descending order
+//Postcondition: Return the greater than or equal value, descending order
 template <class T>
 bool  SortSimulations<T>::greater_equal_compare(T comp_1, T comp_2)
 {
 	return (comp_1 >= comp_2);
 }
 
-//Precondition : Passing in two valid template values
-//Postcondition: Return the less than value, ascending order
-template <class T>
-bool SortSimulations<T>::lesser_compare(T comp_1, T comp_2)
-{
-	return (comp_1 <= comp_2);
-}
 //Precondition : N/A
 //Postcondition: Output the swapping routines of the swap and the sorted data
 template <typename T>
